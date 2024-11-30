@@ -76,13 +76,19 @@
 
     <script>
         const phrases = [
-            "Willkommen im Museum Wolfenbüttel",
-            "Welcome to the Museum Wolfenbüttel",
-            "Bienvenue au Musée Wolfenbüttel",
-            "Bienvenido al Museo Wolfenbüttel"
+            "Willkommen im Museum Wolfenbüttel", // German
+            "Welcome to the Museum Wolfenbüttel", // English
+            "Bienvenue au Musée Wolfenbüttel", // French
+            "Bienvenido al Museo Wolfenbüttel", // Spanish
         ];
 
         const backgroundLayer = document.getElementById("background-layer");
+        const existingHeights = []; // Храним высоты текста, чтобы предотвратить наложение
+
+        function isTooClose(newY) {
+            // Проверяем, не слишком ли близко новая высота к уже существующим
+            return existingHeights.some(y => Math.abs(newY - y) < 30);
+        }
 
         function createFloatingText(phrase, startX, startY, direction) {
             const text = document.createElement('div');
@@ -106,16 +112,22 @@
             move();
         }
 
-        const totalTexts = 10; // Для теста уменьшено количество текстов
+        const totalTexts = 10; // Количество текстов
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
-            const startY = Math.random() * window.innerHeight * 0.9;
+            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100; // Начальная позиция
+            let startY;
+
+            // Генерируем высоту текста, избегая наложения
+            do {
+                startY = Math.random() * window.innerHeight * 0.9;
+            } while (isTooClose(startY));
+
+            existingHeights.push(startY); // Сохраняем высоту, чтобы избежать наложения
+
             const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random();
             createFloatingText(phrase, startX, startY, direction);
         }
-
-        console.log("Скрипт успешно запущен на мобильном устройстве!");
     </script>
 </body>
 </html>
