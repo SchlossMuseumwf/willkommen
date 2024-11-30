@@ -37,9 +37,10 @@
             white-space: nowrap;
             font-size: 48px; /* Крупный текст */
             font-weight: bold;
-            opacity: 0.5; /* Прозрачность текста */
-            color: rgba(0, 0, 0, 0); /* Прозрачные буквы */
+            color: transparent; /* Прозрачный текст */
             -webkit-text-stroke: 1px rgba(0, 0, 0, 0.5); /* Контур текста */
+            background: url('watermark.png') no-repeat center center; /* Тот же фон, что и у страницы */
+            background-size: cover;
             background-clip: text;
             -webkit-background-clip: text;
         }
