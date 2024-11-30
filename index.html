@@ -32,17 +32,17 @@
             background: rgba(255, 255, 255, 0.8); /* Белый слой с прозрачностью */
             z-index: -1;
         }
+        /* Прозрачный текст */
         .floating-text {
             position: absolute;
             white-space: nowrap;
             font-size: 48px; /* Крупный текст */
             font-weight: bold;
-            color: transparent; /* Прозрачный текст */
-            -webkit-text-stroke: 1px rgba(0, 0, 0, 0.5); /* Контур текста */
-            background: url('watermark.png') no-repeat center center; /* Тот же фон, что и у страницы */
+            color: transparent; /* Прозрачный цвет текста */
+            background: url('watermark.png') no-repeat center center; /* Тот же фон */
             background-size: cover;
-            background-clip: text;
-            -webkit-background-clip: text;
+            -webkit-background-clip: text; /* Обрезка фона текстом */
+            -webkit-text-fill-color: transparent; /* Полностью прозрачный текст */
         }
         .container {
             position: absolute;
