@@ -10,24 +10,38 @@
             padding: 0;
             overflow: hidden;
             font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #ffffff, #e6e6e6);
-            color: #333;
         }
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-        }
-        .background-layer {
+        /* Фон с изображением */
+        .background {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            overflow: hidden;
+            background: url('watermark.png') no-repeat center center;
+            background-size: cover;
+            z-index: -2;
+        }
+        /* Полупрозрачный белый слой поверх фона */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8); /* Белый слой с прозрачностью */
+            z-index: -1;
+        }
+        .floating-text {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 48px; /* Крупный текст */
+            font-weight: bold;
+            opacity: 0.5; /* Прозрачность текста */
+            color: rgba(0, 0, 0, 0); /* Прозрачные буквы */
+            -webkit-text-stroke: 1px rgba(0, 0, 0, 0.5); /* Контур текста */
+            background-clip: text;
+            -webkit-background-clip: text;
         }
         .container {
             position: absolute;
@@ -53,20 +67,16 @@
         .button:hover {
             background-color: #5A0000;
         }
-        .floating-text {
-            position: absolute;
-            white-space: nowrap;
-            font-size: 24px;
-            font-weight: bold;
-            opacity: 0.8;
-            color: #000;
-            pointer-events: none;
-        }
     </style>
 </head>
 <body>
-    <div class="background-layer" id="background-layer"></div>
+    <!-- Фон с картинкой -->
+    <div class="background"></div>
 
+    <!-- Полупрозрачный белый слой -->
+    <div class="overlay"></div>
+
+    <!-- Кнопки для выбора языка -->
     <div class="container">
         <a href="de.html" class="button">Deutsch</a>
         <a href="en.html" class="button">English</a>
@@ -74,6 +84,7 @@
         <a href="es.html" class="button">Español</a>
     </div>
 
+    <!-- JavaScript для плавающего текста -->
     <script>
         const phrases = [
             "Willkommen im Museum Wolfenbüttel", // German
@@ -82,13 +93,7 @@
             "Bienvenido al Museo Wolfenbüttel", // Spanish
         ];
 
-        const backgroundLayer = document.getElementById("background-layer");
-        const existingHeights = []; // Храним высоты текста, чтобы предотвратить наложение
-
-        function isTooClose(newY) {
-            // Проверяем, не слишком ли близко новая высота к уже существующим
-            return existingHeights.some(y => Math.abs(newY - y) < 30);
-        }
+        const body = document.body;
 
         function createFloatingText(phrase, startX, startY, direction) {
             const text = document.createElement('div');
@@ -96,7 +101,7 @@
             text.textContent = phrase;
             text.style.left = startX + 'px';
             text.style.top = startY + 'px';
-            backgroundLayer.appendChild(text);
+            body.appendChild(text);
 
             let x = startX;
 
@@ -112,20 +117,12 @@
             move();
         }
 
-        const totalTexts = 10; // Количество текстов
+        const totalTexts = 10;
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
             const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100; // Начальная позиция
-            let startY;
-
-            // Генерируем высоту текста, избегая наложения
-            do {
-                startY = Math.random() * window.innerHeight * 0.9;
-            } while (isTooClose(startY));
-
-            existingHeights.push(startY); // Сохраняем высоту, чтобы избежать наложения
-
-            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random();
+            const startY = Math.random() * window.innerHeight * 0.9; // Высота текста
+            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random(); // Скорость и направление
             createFloatingText(phrase, startX, startY, direction);
         }
     </script>
