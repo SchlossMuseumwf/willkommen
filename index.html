@@ -60,7 +60,7 @@
             font-weight: bold;
             opacity: 0.8;
             color: #000;
-            pointer-events: none;
+            pointer-events: none; /* Текст не мешает кликам по кнопкам */
         }
     </style>
 </head>
@@ -79,13 +79,18 @@
     <!-- JavaScript для плавающего текста -->
     <script>
         const phrases = [
-            "Willkommen im Museum Wolfenbüttel", 
-            "Welcome to the Museum Wolfenbüttel", 
-            "Bienvenue au Musée Wolfenbüttel", 
-            "Bienvenido al Museo Wolfenbüttel"
+            "Willkommen im Museum Wolfenbüttel", // German
+            "Welcome to the Museum Wolfenbüttel", // English
+            "Bienvenue au Musée Wolfenbüttel", // French
+            "Bienvenido al Museo Wolfenbüttel", // Spanish
         ];
 
         const backgroundLayer = document.getElementById("background-layer");
+
+        // Проверка на наложение текста
+        function isOverlapping(newY, existingTexts) {
+            return existingTexts.some(({ y }) => Math.abs(newY - y) < 30); // Минимальное расстояние между текстами
+        }
 
         function createFloatingText(phrase, startX, startY, direction) {
             const text = document.createElement('div');
@@ -105,17 +110,27 @@
                 if ((direction > 0 && x > window.innerWidth) || (direction < 0 && x < -text.offsetWidth)) {
                     x = direction > 0 ? -text.offsetWidth : window.innerWidth;
                 }
-                setTimeout(move, 16); // Заменяет requestAnimationFrame
+                setTimeout(move, 16); // Замедляет анимацию
             }
             move();
         }
 
-        const totalTexts = 18;
+        // Создание плавающих текстов
+        const totalTexts = 18; // Уменьшено на 10%
+        const existingTexts = [];
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
-            const startY = Math.random() * window.innerHeight * 0.9;
-            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random();
+            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100; // Начальная позиция (слева или справа)
+            let startY;
+
+            // Генерируем высоту, избегая наложения текста
+            do {
+                startY = Math.random() * window.innerHeight * 0.9;
+            } while (isOverlapping(startY, existingTexts));
+
+            existingTexts.push({ y: startY });
+
+            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random(); // Скорость и направление
             createFloatingText(phrase, startX, startY, direction);
         }
     </script>
