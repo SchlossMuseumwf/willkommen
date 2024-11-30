@@ -66,7 +66,7 @@
         .floating-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 36px; /* Увеличенный размер текста */
+                 font-size: 36px; /* Увеличенный размер текста */
             font-weight: bold;
             color: rgba(0, 0, 0, 0); /* Прозрачный текст */
             -webkit-text-stroke: 1px rgba(0, 0, 0, 0.2); /* Тонкий контур для текста */
@@ -75,6 +75,7 @@
             -webkit-background-clip: text; /* "Дырки" через текст */
             background-clip: text;
             pointer-events: none;
+            background-attachment: fixed; /* Фиксированное положение фона */
         }
     </style>
 </head>
@@ -134,3 +135,4 @@
     </script>
 </body>
 </html>
+      
