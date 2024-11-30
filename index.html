@@ -13,13 +13,20 @@
             background: linear-gradient(to bottom, #ffffff, #e6e6e6);
             color: #333;
         }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden; /* Убирает горизонтальный скроллинг */
+        }
         .background-layer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; /* Задний слой */
+            z-index: 0;
             overflow: hidden;
         }
         .container {
@@ -28,7 +35,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            z-index: 1; /* Передний слой */
+            z-index: 1;
         }
         .button {
             display: inline-block;
@@ -39,12 +46,12 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            background-color: #8B0000; /* Тёмно-красный */
+            background-color: #8B0000;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         .button:hover {
-            background-color: #5A0000; /* Более тёмный оттенок при наведении */
+            background-color: #5A0000;
         }
         .floating-text {
             position: absolute;
@@ -52,8 +59,8 @@
             font-size: 24px;
             font-weight: bold;
             opacity: 0.8;
-            color: #000; /* Чёрный цвет */
-            pointer-events: none; /* Текст не мешает кликам по кнопкам */
+            color: #000;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -72,10 +79,10 @@
     <!-- JavaScript для плавающего текста -->
     <script>
         const phrases = [
-            "Willkommen im Museum Wolfenbüttel", // German
-            "Welcome to the Museum Wolfenbüttel", // English
-            "Bienvenue au Musée Wolfenbüttel", // French
-            "Bienvenido al Museo Wolfenbüttel", // Spanish
+            "Willkommen im Museum Wolfenbüttel", 
+            "Welcome to the Museum Wolfenbüttel", 
+            "Bienvenue au Musée Wolfenbüttel", 
+            "Bienvenido al Museo Wolfenbüttel"
         ];
 
         const backgroundLayer = document.getElementById("background-layer");
@@ -98,33 +105,17 @@
                 if ((direction > 0 && x > window.innerWidth) || (direction < 0 && x < -text.offsetWidth)) {
                     x = direction > 0 ? -text.offsetWidth : window.innerWidth;
                 }
-                requestAnimationFrame(move);
+                setTimeout(move, 16); // Заменяет requestAnimationFrame
             }
-
             move();
         }
 
-        // Функция для предотвращения наложения
-        function isOverlapping(newY, existingTexts) {
-            return existingTexts.some(({ y }) => Math.abs(newY - y) < 30); // Минимальное расстояние между текстами
-        }
-
-        // Создаём меньше текстов, предотвращая наложение
-        const totalTexts = Math.floor(20 * 0.9); // Уменьшено на 10%
-        const existingTexts = [];
+        const totalTexts = 18;
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100; // Начальная позиция (слева или справа)
-            let startY;
-
-            // Генерируем новую высоту, пока она не будет достаточно далеко от других текстов
-            do {
-                startY = Math.random() * window.innerHeight * 0.9;
-            } while (isOverlapping(startY, existingTexts));
-
-            existingTexts.push({ y: startY });
-
-            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random(); // Замедлено движение
+            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
+            const startY = Math.random() * window.innerHeight * 0.9;
+            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random();
             createFloatingText(phrase, startX, startY, direction);
         }
     </script>
