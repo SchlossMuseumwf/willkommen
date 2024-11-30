@@ -66,16 +66,14 @@
         .floating-text {
             position: absolute;
             white-space: nowrap;
-                 font-size: 36px; /* Увеличенный размер текста */
+            font-size: 36px; /* Увеличенный размер текста */
             font-weight: bold;
-            color: rgba(0, 0, 0, 0); /* Прозрачный текст */
-            -webkit-text-stroke: 1px rgba(0, 0, 0, 0.2); /* Тонкий контур для текста */
-            background: url('watermark.png') no-repeat center center;
+            color: rgba(0, 0, 0, 0); /* Полностью прозрачный текст */
+            background: url('watermark.png') no-repeat fixed center;
             background-size: cover;
-            -webkit-background-clip: text; /* "Дырки" через текст */
+            -webkit-background-clip: text; /* Делаем текст прозрачным, показывая фон */
             background-clip: text;
             pointer-events: none;
-            background-attachment: fixed; /* Фиксированное положение фона */
         }
     </style>
 </head>
@@ -135,4 +133,3 @@
     </script>
 </body>
 </html>
-      
