@@ -10,33 +10,34 @@
             padding: 0;
             overflow: hidden;
             font-family: Arial, sans-serif;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        /* Фоновое изображение */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: url('watermark.png') no-repeat center center;
             background-size: cover;
-            position: relative;
+            z-index: 0;
         }
+        /* Полупрозрачный белый слой */
         .overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый слой */
+            background-color: rgba(255, 255, 255, 0.7);
             z-index: 1;
         }
-        .floating-text {
-            position: absolute;
-            white-space: nowrap;
-            font-size: 48px; /* Крупный текст */
-            font-weight: bold;
-            color: white; /* Задаём цвет текста для маски */
-            mix-blend-mode: lighten; /* Маска работает корректно */
-            -webkit-mask: url('watermark.png') no-repeat center center;
-            mask: url('watermark.png') no-repeat center center;
-            -webkit-mask-size: cover;
-            mask-size: cover;
-            background-clip: text;
-            -webkit-background-clip: text;
-        }
+        /* Контейнер кнопок */
         .container {
             position: absolute;
             top: 50%;
@@ -61,13 +62,28 @@
         .button:hover {
             background-color: #5A0000;
         }
+        /* Текст "дырочками" */
+        .floating-text {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 36px; /* Увеличенный размер текста */
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0); /* Прозрачный текст */
+            -webkit-text-stroke: 1px rgba(0, 0, 0, 0.2); /* Тонкий контур для текста */
+            background: url('watermark.png') no-repeat center center;
+            background-size: cover;
+            -webkit-background-clip: text; /* "Дырки" через текст */
+            background-clip: text;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
-    <!-- Полупрозрачный белый слой -->
+    <!-- Задний фон -->
+    <div class="background"></div>
+    <!-- Полупрозрачный слой -->
     <div class="overlay"></div>
-
-    <!-- Кнопки для выбора языка -->
+    <!-- Контейнер с кнопками -->
     <div class="container">
         <a href="de.html" class="button">Deutsch</a>
         <a href="en.html" class="button">English</a>
@@ -75,7 +91,6 @@
         <a href="es.html" class="button">Español</a>
     </div>
 
-    <!-- JavaScript для плавающего текста -->
     <script>
         const phrases = [
             "Willkommen im Museum Wolfenbüttel", // German
@@ -84,7 +99,7 @@
             "Bienvenido al Museo Wolfenbüttel", // Spanish
         ];
 
-        const body = document.body;
+        const backgroundLayer = document.querySelector('.overlay');
 
         function createFloatingText(phrase, startX, startY, direction) {
             const text = document.createElement('div');
@@ -92,13 +107,13 @@
             text.textContent = phrase;
             text.style.left = startX + 'px';
             text.style.top = startY + 'px';
-            body.appendChild(text);
+            backgroundLayer.appendChild(text);
 
             let x = startX;
 
             function move() {
                 x += direction;
-                text.style.left = `${x}px`;
+                text.style.left = x + 'px';
 
                 if ((direction > 0 && x > window.innerWidth) || (direction < 0 && x < -text.offsetWidth)) {
                     x = direction > 0 ? -text.offsetWidth : window.innerWidth;
@@ -108,12 +123,12 @@
             move();
         }
 
-        const totalTexts = 10;
+        const totalTexts = 10; // Количество текстов
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100; // Начальная позиция
-            const startY = Math.random() * window.innerHeight * 0.9; // Высота текста
-            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random(); // Скорость и направление
+            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
+            const startY = Math.random() * window.innerHeight * 0.9;
+            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random();
             createFloatingText(phrase, startX, startY, direction);
         }
     </script>
