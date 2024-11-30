@@ -66,7 +66,7 @@
         .floating-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 48px; /* Увеличенный размер текста */
+            font-size: 5vw; /* Масштабируемый размер текста для всех устройств */
             font-weight: bold;
             color: rgba(0, 0, 0, 0); /* Полностью прозрачный текст */
             background: url('watermark.png') no-repeat fixed center;
@@ -103,7 +103,8 @@
 
         function isTooClose(newY) {
             // Проверяем, не слишком ли близко новая высота к уже существующим
-            return existingHeights.some(y => Math.abs(newY - y) < 60); // Увеличено минимальное расстояние
+            const minSpacing = window.innerWidth < 768 ? 80 : 60; // Расстояние между строками: больше на мобильных устройствах
+            return existingHeights.some(y => Math.abs(newY - y) < minSpacing);
         }
 
         function createFloatingText(phrase, startX, startY, direction) {
@@ -128,7 +129,7 @@
             move();
         }
 
-        const totalTexts = 10; // Количество текстов
+        const totalTexts = window.innerWidth < 768 ? 6 : 10; // Меньше текста на мобильных устройствах
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
             const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
