@@ -66,7 +66,7 @@
         .floating-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 36px; /* Увеличенный размер текста */
+            font-size: 48px; /* Увеличенный размер текста */
             font-weight: bold;
             color: rgba(0, 0, 0, 0); /* Полностью прозрачный текст */
             background: url('watermark.png') no-repeat fixed center;
@@ -99,6 +99,12 @@
         ];
 
         const backgroundLayer = document.querySelector('.overlay');
+        const existingHeights = []; // Храним высоты текста, чтобы предотвратить наложение
+
+        function isTooClose(newY) {
+            // Проверяем, не слишком ли близко новая высота к уже существующим
+            return existingHeights.some(y => Math.abs(newY - y) < 60); // Увеличено минимальное расстояние
+        }
 
         function createFloatingText(phrase, startX, startY, direction) {
             const text = document.createElement('div');
@@ -126,7 +132,15 @@
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
             const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
-            const startY = Math.random() * window.innerHeight * 0.9;
+            let startY;
+
+            // Генерируем высоту текста, избегая наложения
+            do {
+                startY = Math.random() * window.innerHeight * 0.9;
+            } while (isTooClose(startY));
+
+            existingHeights.push(startY); // Сохраняем высоту, чтобы избежать наложения
+
             const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random();
             createFloatingText(phrase, startX, startY, direction);
         }
