@@ -12,7 +12,8 @@
             font-family: Arial, sans-serif;
         }
         /* Фон с изображением */
-        .background {
+        body::before {
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
@@ -23,7 +24,8 @@
             z-index: -2;
         }
         /* Полупрозрачный белый слой поверх фона */
-        .overlay {
+        body::after {
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
@@ -32,26 +34,50 @@
             background: rgba(255, 255, 255, 0.8); /* Белый слой с прозрачностью */
             z-index: -1;
         }
-        /* Прозрачный текст */
         .floating-text {
             position: absolute;
             white-space: nowrap;
             font-size: 48px; /* Крупный текст */
             font-weight: bold;
-            color: transparent; /* Прозрачный цвет текста */
-            background: url('watermark.png') no-repeat center center; /* Прозрачный фон для текста */
-            background-size: cover;
-            -webkit-background-clip: text; /* Обрезка фона текстом */
+            color: transparent; /* Прозрачный текст */
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent; /* Полностью прозрачный текст */
+            background-clip: text;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            background-color: #8B0000;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #5A0000;
         }
     </style>
 </head>
 <body>
-    <!-- Фон с картинкой -->
-    <div class="background"></div>
-
-    <!-- Полупрозрачный белый слой -->
-    <div class="overlay"></div>
+    <!-- Кнопки для выбора языка -->
+    <div class="container">
+        <a href="de.html" class="button">Deutsch</a>
+        <a href="en.html" class="button">English</a>
+        <a href="fr.html" class="button">Français</a>
+        <a href="es.html" class="button">Español</a>
+    </div>
 
     <!-- JavaScript для плавающего текста -->
     <script>
@@ -70,10 +96,6 @@
             text.textContent = phrase;
             text.style.left = startX + 'px';
             text.style.top = startY + 'px';
-
-            // Привязка фона текста к экрану
-            text.style.backgroundPosition = `${startX}px ${startY}px`;
-
             body.appendChild(text);
 
             let x = startX;
@@ -81,7 +103,6 @@
             function move() {
                 x += direction;
                 text.style.left = x + 'px';
-                text.style.backgroundPosition = `${x}px ${startY}px`; // Обновляем фон вместе с текстом
 
                 if ((direction > 0 && x > window.innerWidth) || (direction < 0 && x < -text.offsetWidth)) {
                     x = direction > 0 ? -text.offsetWidth : window.innerWidth;
