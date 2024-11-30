@@ -104,12 +104,27 @@
             move();
         }
 
-        // Создаём больше текстов с разными скоростями, высотами и направлениями
-        for (let i = 0; i < 20; i++) { // Увеличено количество текстов
+        // Функция для предотвращения наложения
+        function isOverlapping(newY, existingTexts) {
+            return existingTexts.some(({ y }) => Math.abs(newY - y) < 30); // Минимальное расстояние между текстами
+        }
+
+        // Создаём меньше текстов, предотвращая наложение
+        const totalTexts = Math.floor(20 * 0.9); // Уменьшено на 10%
+        const existingTexts = [];
+        for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
             const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100; // Начальная позиция (слева или справа)
-            const startY = Math.random() * window.innerHeight * 0.9; // Случайная высота
-            const direction = startX < 0 ? 2 + Math.random() * 2 : -2 - Math.random() * 2; // Скорость и направление
+            let startY;
+
+            // Генерируем новую высоту, пока она не будет достаточно далеко от других текстов
+            do {
+                startY = Math.random() * window.innerHeight * 0.9;
+            } while (isOverlapping(startY, existingTexts));
+
+            existingTexts.push({ y: startY });
+
+            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random(); // Замедлено движение
             createFloatingText(phrase, startX, startY, direction);
         }
     </script>
