@@ -12,6 +12,7 @@
             font-family: Arial, sans-serif;
             background: url('watermark.png') no-repeat center center;
             background-size: cover;
+            position: relative;
         }
         .overlay {
             position: absolute;
@@ -27,12 +28,8 @@
             white-space: nowrap;
             font-size: 48px; /* Крупный текст */
             font-weight: bold;
-            color: transparent; /* Полностью прозрачный текст */
-            background: url('watermark.png') no-repeat center center; /* Фон текста */
-            background-size: cover;
-            -webkit-background-clip: text; /* Прозрачные буквы */
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: rgba(255, 255, 255, 0); /* Прозрачный текст */
+            mix-blend-mode: destination-out; /* Вырезание текста */
         }
         .container {
             position: absolute;
@@ -89,19 +86,17 @@
             text.textContent = phrase;
             text.style.left = startX + 'px';
             text.style.top = startY + 'px';
-            text.style.backgroundPosition = `${startX}px ${startY}px`; // Динамическая позиция фона
             body.appendChild(text);
 
             let x = startX;
 
             function move() {
                 x += direction;
-                text.style.left = `${x}px`;
+                text.style.left = x + 'px';
 
                 if ((direction > 0 && x > window.innerWidth) || (direction < 0 && x < -text.offsetWidth)) {
                     x = direction > 0 ? -text.offsetWidth : window.innerWidth;
                 }
-                text.style.backgroundPosition = `${x}px ${startY}px`; // Синхронизация с движением
                 requestAnimationFrame(move);
             }
             move();
