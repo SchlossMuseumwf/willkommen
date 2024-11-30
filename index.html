@@ -21,15 +21,21 @@
             width: 100%;
             height: 100%;
             background: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый слой */
-            z-index: -1;
+            z-index: 1;
         }
         .floating-text {
             position: absolute;
             white-space: nowrap;
             font-size: 48px; /* Крупный текст */
             font-weight: bold;
-            color: rgba(255, 255, 255, 0); /* Прозрачный текст */
-            mix-blend-mode: destination-out; /* Вырезание текста */
+            color: white; /* Задаём цвет текста для маски */
+            mix-blend-mode: lighten; /* Маска работает корректно */
+            -webkit-mask: url('watermark.png') no-repeat center center;
+            mask: url('watermark.png') no-repeat center center;
+            -webkit-mask-size: cover;
+            mask-size: cover;
+            background-clip: text;
+            -webkit-background-clip: text;
         }
         .container {
             position: absolute;
@@ -37,7 +43,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            z-index: 1;
+            z-index: 2;
         }
         .button {
             display: inline-block;
@@ -92,7 +98,7 @@
 
             function move() {
                 x += direction;
-                text.style.left = x + 'px';
+                text.style.left = `${x}px`;
 
                 if ((direction > 0 && x > window.innerWidth) || (direction < 0 && x < -text.offsetWidth)) {
                     x = direction > 0 ? -text.offsetWidth : window.innerWidth;
