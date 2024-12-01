@@ -66,7 +66,7 @@
         .floating-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 8vw; /* Оптимизированный размер текста */
+            font-size: 10vw; /* Увеличенный размер текста */
             font-weight: bold;
             color: rgba(0, 0, 0, 0); /* Полностью прозрачный текст */
             background: url('watermark.png') no-repeat fixed center;
@@ -134,18 +134,18 @@
 
         const screenHeight = window.innerHeight;
         const thirds = [
-            { yStart: screenHeight * 0.05, yEnd: screenHeight * 0.3 }, // Верхняя треть
-            { yStart: screenHeight * 0.35, yEnd: screenHeight * 0.65 }, // Средняя треть
-            { yStart: screenHeight * 0.7, yEnd: screenHeight * 0.95 }  // Нижняя треть
+            { yStart: screenHeight * 0.05, yEnd: screenHeight * 0.3, rows: 2 }, // Верхняя треть
+            { yStart: screenHeight * 0.35, yEnd: screenHeight * 0.65, rows: 2 }, // Средняя треть
+            { yStart: screenHeight * 0.7, yEnd: screenHeight * 0.95, rows: 2 }  // Нижняя треть
         ];
 
-        thirds.forEach((third, index) => {
-            const phrasesInSection = Math.floor(6 / thirds.length); // Равномерное распределение
-            for (let i = 0; i < phrasesInSection; i++) {
+        thirds.forEach((third) => {
+            const rowHeight = (third.yEnd - third.yStart) / third.rows; // Высота строки в пределах трети
+            for (let i = 0; i < third.rows; i++) {
                 const phrase = phrases[Math.floor(Math.random() * phrases.length)];
                 const font = fonts[Math.floor(Math.random() * fonts.length)];
                 const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
-                const startY = Math.random() * (third.yEnd - third.yStart) + third.yStart;
+                const startY = third.yStart + i * rowHeight + rowHeight / 2; // Равномерное распределение строк
                 const direction = startX < 0 ? 1 + Math.random() * 2 : -1 - Math.random() * 2;
 
                 createFloatingText(phrase, startX, startY, direction, font);
@@ -154,3 +154,4 @@
     </script>
 </body>
 </html>
+
