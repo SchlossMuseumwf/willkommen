@@ -66,7 +66,7 @@
         .floating-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 5vw; /* Масштабируемый размер текста для всех устройств */
+            font-size: 8vw; /* Крупный размер текста для всех устройств */
             font-weight: bold;
             color: rgba(0, 0, 0, 0); /* Полностью прозрачный текст */
             background: url('watermark.png') no-repeat fixed center;
@@ -103,7 +103,7 @@
 
         function isTooClose(newY) {
             // Проверяем, не слишком ли близко новая высота к уже существующим
-            const minSpacing = window.innerWidth < 768 ? 80 : 60; // Расстояние между строками: больше на мобильных устройствах
+            const minSpacing = 100; // Минимальное расстояние между строками (увеличено)
             return existingHeights.some(y => Math.abs(newY - y) < minSpacing);
         }
 
@@ -129,7 +129,7 @@
             move();
         }
 
-        const totalTexts = window.innerWidth < 768 ? 6 : 10; // Меньше текста на мобильных устройствах
+        const totalTexts = 8; // Количество текстов
         for (let i = 0; i < totalTexts; i++) {
             const phrase = phrases[Math.floor(Math.random() * phrases.length)];
             const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
