@@ -66,7 +66,7 @@
         .floating-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 12vw; /* Оптимизированный размер текста */
+            font-size: 8vw; /* Оптимизированный размер текста */
             font-weight: bold;
             color: rgba(0, 0, 0, 0); /* Полностью прозрачный текст */
             background: url('watermark.png') no-repeat fixed center;
@@ -98,19 +98,22 @@
             "Bienvenido al Museo Wolfenbüttel", // Spanish
         ];
 
+        const fonts = [
+            "Arial, sans-serif",
+            "Georgia, serif",
+            "Courier New, monospace",
+            "Times New Roman, serif",
+            "Verdana, sans-serif",
+            "Trebuchet MS, sans-serif"
+        ];
+
         const backgroundLayer = document.querySelector('.overlay');
-        const existingHeights = []; // Храним высоты текста, чтобы предотвратить наложение
 
-        function isTooClose(newY) {
-            // Проверяем, не слишком ли близко новая высота к уже существующим
-            const minSpacing = window.innerWidth < 768 ? 80 : 100; // Оптимизировано расстояние
-            return existingHeights.some(y => Math.abs(newY - y) < minSpacing);
-        }
-
-        function createFloatingText(phrase, startX, startY, direction) {
+        function createFloatingText(phrase, startX, startY, direction, font) {
             const text = document.createElement('div');
             text.className = 'floating-text';
             text.textContent = phrase;
+            text.style.fontFamily = font;
             text.style.left = startX + 'px';
             text.style.top = startY + 'px';
             backgroundLayer.appendChild(text);
@@ -129,22 +132,25 @@
             move();
         }
 
-        const totalTexts = window.innerWidth < 768 ? 5 : 10; // Меньше текста на мобильных устройствах
-        for (let i = 0; i < totalTexts; i++) {
-            const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-            const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
-            let startY;
+        const screenHeight = window.innerHeight;
+        const thirds = [
+            { yStart: screenHeight * 0.05, yEnd: screenHeight * 0.3 }, // Верхняя треть
+            { yStart: screenHeight * 0.35, yEnd: screenHeight * 0.65 }, // Средняя треть
+            { yStart: screenHeight * 0.7, yEnd: screenHeight * 0.95 }  // Нижняя треть
+        ];
 
-            // Генерируем высоту текста, избегая наложения
-            do {
-                startY = Math.random() * window.innerHeight * 0.9;
-            } while (isTooClose(startY));
+        thirds.forEach((third, index) => {
+            const phrasesInSection = Math.floor(6 / thirds.length); // Равномерное распределение
+            for (let i = 0; i < phrasesInSection; i++) {
+                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+                const font = fonts[Math.floor(Math.random() * fonts.length)];
+                const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
+                const startY = Math.random() * (third.yEnd - third.yStart) + third.yStart;
+                const direction = startX < 0 ? 1 + Math.random() * 2 : -1 - Math.random() * 2;
 
-            existingHeights.push(startY); // Сохраняем высоту, чтобы избежать наложения
-
-            const direction = startX < 0 ? 1 + Math.random() : -1 - Math.random();
-            createFloatingText(phrase, startX, startY, direction);
-        }
+                createFloatingText(phrase, startX, startY, direction, font);
+            }
+        });
     </script>
 </body>
 </html>
