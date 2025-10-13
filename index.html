@@ -1,81 +1,68 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Museum Wolfenbüttel</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
         html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
+            width: 100%; height: 100%;
+            margin: 0; padding: 0;
+            overflow-x: hidden; overflow-y: hidden;
+            font-family: Arial, sans-serif;
         }
         /* Фоновое изображение */
         .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: absolute; inset: 0;
             background: url('watermark.png') no-repeat center center;
-            background-size: cover;
-            z-index: 0;
+            background-size: cover; z-index: 0;
         }
         /* Полупрозрачный белый слой */
         .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.7);
+            position: absolute; inset: 0;
+            background-color: rgba(255,255,255,0.7);
             z-index: 1;
         }
         /* Контейнер кнопок */
         .container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
+            position: absolute; z-index: 2;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            z-index: 2;
         }
         .button {
             display: inline-block;
             margin: 10px;
             padding: 15px 30px;
-            width: 150px; /* Фиксированная ширина */
-            text-align: center; /* Выравнивание текста по центру */
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
+            width: 150px;
+            text-align: center;
+            font-size: 18px; font-weight: bold;
+            color: #fff; text-decoration: none;
             border-radius: 5px;
             background-color: #8B0000;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            cursor: pointer; transition: background-color .3s;
         }
-        .button:hover {
-            background-color: #5A0000;
-        }
-        /* Текст "дырочками" */
+        .button:hover { background-color: #5A0000; }
+
+        /* Плавающий «дырочный» текст */
         .floating-text {
             position: absolute;
             white-space: nowrap;
-            font-size: 10vw; /* Увеличенный размер текста */
+            font-size: 10vw;            /* можно уменьшить при желании */
             font-weight: bold;
-            color: rgba(0, 0, 0, 0); /* Полностью прозрачный текст */
+            color: rgba(0,0,0,0);        /* прозрачный текст */
             background: url('watermark.png') no-repeat fixed center;
             background-size: cover;
-            -webkit-background-clip: text; /* Делаем текст прозрачным, показывая фон */
+            -webkit-background-clip: text;
             background-clip: text;
             pointer-events: none;
+            user-select: none;
+        }
+
+        /* Адаптив: уменьшим размер фраз на очень узких экранах */
+        @media (max-width: 600px) {
+            .floating-text { font-size: 14vw; }
+            .button { width: 140px; font-size: 16px; padding: 12px 24px; }
         }
     </style>
 </head>
@@ -84,26 +71,32 @@
     <div class="background"></div>
     <!-- Полупрозрачный слой -->
     <div class="overlay"></div>
-    <!-- Контейнер с кнопками -->
-    <div class="container">
-    <a href="https://schlossmuseumwf.github.io/Zahlen/" class="button">Deutsch</a>
-    <a href="https://schlossmuseumwf.github.io/Numbers/" class="button">English</a>
-    <a href="https://schlossmuseumwf.github.io/Nombres/" class="button">Français</a>
-    <a href="https://schlossmuseumwf.github.io/Numeros/" class="button">Español</a>
-    <a href="https://schlossmuseumwf.github.io/Getallen/" class="button">Nederlands</a>
-    <a href="https://schlossmuseumwf.github.io/NumbersRU/" class="button">Русский</a>
-    <a href="https://schlossmuseumwf.github.io/Numeri/" class="button">Italiano</a>
-    <a href="https://schlossmuseumwf.github.io/Tal/" class="button">Dansk</a> <!-- Датский -->
-</div>
 
+    <!-- Кнопки языков -->
+    <div class="container">
+        <a href="https://schlossmuseumwf.github.io/Zahlen/"   class="button">Deutsch</a>
+        <a href="https://schlossmuseumwf.github.io/Numbers/"  class="button">English</a>
+        <a href="https://schlossmuseumwf.github.io/Nombres/"  class="button">Français</a>
+        <a href="https://schlossmuseumwf.github.io/Numeros/"  class="button">Español</a>
+        <a href="https://schlossmuseumwf.github.io/Getallen/" class="button">Nederlands</a>
+        <a href="https://schlossmuseumwf.github.io/NumbersRU/"class="button">Русский</a>
+        <a href="https://schlossmuseumwf.github.io/Numeri/"   class="button">Italiano</a>
+        <a href="https://schlossmuseumwf.github.io/Tal/"      class="button">Dansk</a>
+        <a href="https://schlossmuseumwf.github.io/Shuzi/"    class="button">中文</a>
+    </div>
 
     <script>
+        // Фразы на всех языках, в том же порядке, что и кнопки
         const phrases = [
-            "Willkommen im Museum Wolfenbüttel", // German
-            "Welcome to the Museum Wolfenbüttel", // English
-            "Bienvenue au Musée Wolfenbüttel", // French
-            "Bienvenido al Museo Wolfenbüttel", // Spanish
-            "Добро пожаловать в музей Вольфенбюттеля" // Russian
+            "Willkommen im Museum Wolfenbüttel",       // Deutsch
+            "Welcome to the Museum Wolfenbüttel",      // English
+            "Bienvenue au Musée Wolfenbüttel",         // Français
+            "Bienvenido al Museo Wolfenbüttel",        // Español
+            "Welkom in het Museum Wolfenbüttel",       // Nederlands
+            "Добро пожаловать в музей Вольфенбюттеля", // Русский
+            "Benvenuto al Museo Wolfenbüttel",         // Italiano
+            "Velkommen til Museum Wolfenbüttel",       // Dansk
+            "欢迎来到沃尔芬比特尔博物馆"                     // 中文
         ];
 
         const fonts = [
@@ -115,51 +108,87 @@
             "Trebuchet MS, sans-serif"
         ];
 
-        const backgroundLayer = document.querySelector('.overlay');
+        const overlay = document.querySelector('.overlay');
 
-        function createFloatingText(phrase, startX, startY, direction, font) {
-            const text = document.createElement('div');
-            text.className = 'floating-text';
-            text.textContent = phrase;
-            text.style.fontFamily = font;
-            text.style.left = startX + 'px';
-            text.style.top = startY + 'px';
-            backgroundLayer.appendChild(text);
-
-            let x = startX;
-
-            function move() {
-                x += direction;
-                text.style.left = x + 'px';
-
-                if ((direction > 0 && x > window.innerWidth) || (direction < 0 && x < -text.offsetWidth)) {
-                    x = direction > 0 ? -text.offsetWidth : window.innerWidth;
-                }
-                requestAnimationFrame(move);
-            }
-            move();
-        }
-
-        const screenHeight = window.innerHeight;
+        // Создаём 9 строк (3 в каждой трети экрана), каждая строка — свой язык
+        const rowsPerThird = 3; // итого 9 строк (3*3)
         const thirds = [
-            { yStart: screenHeight * 0.05, yEnd: screenHeight * 0.3, rows: 2 }, // Верхняя треть
-            { yStart: screenHeight * 0.35, yEnd: screenHeight * 0.65, rows: 2 }, // Средняя треть
-            { yStart: screenHeight * 0.7, yEnd: screenHeight * 0.95, rows: 2 }  // Нижняя треть
+            { start: 0.05, end: 0.30 }, // верх
+            { start: 0.35, end: 0.65 }, // середина
+            { start: 0.70, end: 0.95 }  // низ
         ];
 
-        thirds.forEach((third) => {
-            const rowHeight = (third.yEnd - third.yStart) / third.rows; // Высота строки в пределах трети
-            for (let i = 0; i < third.rows; i++) {
-                const phrase = phrases[Math.floor(Math.random() * phrases.length)];
-                const font = fonts[Math.floor(Math.random() * fonts.length)];
-                const startX = Math.random() < 0.5 ? -300 : window.innerWidth + 100;
-                const startY = third.yStart + i * rowHeight + rowHeight / 2; // Равномерное распределение строк
-                const direction = startX < 0 ? 1 + Math.random() * 2 : -1 - Math.random() * 2;
+        function createFloatingText({ phrase, y, direction, font, speed }) {
+            const el = document.createElement('div');
+            el.className = 'floating-text';
+            el.textContent = phrase;
+            el.style.fontFamily = font;
+            el.style.top = y + 'px';
+            overlay.appendChild(el);
 
-                createFloatingText(phrase, startX, startY, direction, font);
+            // Стартовая X снаружи экрана, в зависимости от направления
+            let x = direction > 0 ? -el.offsetWidth - 50 : window.innerWidth + 50;
+            el.style.left = x + 'px';
+
+            let lastTime = null;
+            function tick(ts) {
+                if (!lastTime) lastTime = ts;
+                const dt = (ts - lastTime) / 16.7; // нормируем к ~60fps
+                lastTime = ts;
+
+                x += direction * speed * dt;
+                el.style.left = x + 'px';
+
+                // Зацикливание
+                if (direction > 0 && x > window.innerWidth + 50) {
+                    x = -el.offsetWidth - 50;
+                } else if (direction < 0 && x < -el.offsetWidth - 50) {
+                    x = window.innerWidth + 50;
+                }
+                requestAnimationFrame(tick);
             }
+            requestAnimationFrame(tick);
+        }
+
+        function setup() {
+            const H = window.innerHeight;
+
+            // Чистим предыдущие, если пересоздаём при ресайзе
+            overlay.querySelectorAll('.floating-text').forEach(n => n.remove());
+
+            let langIndex = 0;
+            thirds.forEach((t, tIdx) => {
+                const yStart = H * t.start;
+                const yEnd   = H * t.end;
+                const rowH   = (yEnd - yStart) / rowsPerThird;
+
+                for (let r = 0; r < rowsPerThird; r++) {
+                    // Берём фразу по порядку, чтобы каждый язык точно показался
+                    const phrase = phrases[langIndex % phrases.length];
+                    const font   = fonts[(langIndex * 3) % fonts.length];
+
+                    // Чередуем направление строк: →, ←, →, ← …
+                    const direction = (langIndex % 2 === 0) ? 1 : -1;
+
+                    // Лёгкая вариация скорости, базовая ~2..3 px/кадр
+                    const speed = 2 + (langIndex % 3) * 0.6 + Math.random() * 0.4;
+
+                    // Позиция по Y — по центру строки
+                    const y = yStart + r * rowH + rowH / 2;
+
+                    createFloatingText({ phrase, y, direction, font, speed });
+                    langIndex++;
+                }
+            });
+        }
+
+        // Инициализация и обновление при ресайзе
+        setup();
+        window.addEventListener('resize', () => {
+            // Дадим браузеру завершить текущий рефлоу
+            clearTimeout(window.__ft_resize_timer);
+            window.__ft_resize_timer = setTimeout(setup, 150);
         });
     </script>
 </body>
 </html>
-
