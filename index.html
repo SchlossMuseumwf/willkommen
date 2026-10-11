@@ -29,6 +29,9 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
+            width: min(760px, calc(100% - 24px));
+            max-height: calc(100% - 24px);
+            overflow-y: auto;
         }
         .button {
             display: inline-block;
@@ -62,7 +65,7 @@
         /* Адаптив: уменьшим размер фраз на очень узких экранах */
         @media (max-width: 600px) {
             .floating-text { font-size: 14vw; }
-            .button { width: 140px; font-size: 16px; padding: 12px 24px; }
+            .button { box-sizing: border-box; width: calc(50% - 20px); font-size: 16px; padding: 12px 8px; }
         }
     </style>
 </head>
@@ -83,6 +86,7 @@
         <a href="https://schlossmuseumwf.github.io/Numeri/"   class="button">Italiano</a>
         <a href="https://schlossmuseumwf.github.io/Tal/"      class="button">Dansk</a>
         <a href="https://schlossmuseumwf.github.io/Shuzi/"    class="button">中文</a>
+        <a href="https://schlossmuseumwf.github.io/willkommen/sv/" class="button" lang="sv">Svenska</a>
     </div>
 
     <script>
@@ -96,7 +100,8 @@
             "Добро пожаловать в музей Вольфенбюттеля", // Русский
             "Benvenuto al Museo Wolfenbüttel",         // Italiano
             "Velkommen til Museum Wolfenbüttel",       // Dansk
-            "欢迎来到沃尔芬比特尔博物馆"                     // 中文
+            "欢迎来到沃尔芬比特尔博物馆",                    // 中文
+            "Välkommen till Museum Wolfenbüttel"        // Svenska
         ];
 
         const fonts = [
@@ -110,8 +115,8 @@
 
         const overlay = document.querySelector('.overlay');
 
-        // Создаём 9 строк (3 в каждой трети экрана), каждая строка — свой язык
-        const rowsPerThird = 3; // итого 9 строк (3*3)
+        // Распределяем все языки между тремя частями экрана
+        const frameIds = new Set();
         const thirds = [
             { start: 0.05, end: 0.30 }, // верх
             { start: 0.35, end: 0.65 }, // середина
@@ -131,7 +136,9 @@
             el.style.left = x + 'px';
 
             let lastTime = null;
+            let frameId = null;
             function tick(ts) {
+                if (frameId !== null) frameIds.delete(frameId);
                 if (!lastTime) lastTime = ts;
                 const dt = (ts - lastTime) / 16.7; // нормируем к ~60fps
                 lastTime = ts;
@@ -145,19 +152,26 @@
                 } else if (direction < 0 && x < -el.offsetWidth - 50) {
                     x = window.innerWidth + 50;
                 }
-                requestAnimationFrame(tick);
+                frameId = requestAnimationFrame(tick);
+                frameIds.add(frameId);
             }
-            requestAnimationFrame(tick);
+            frameId = requestAnimationFrame(tick);
+            frameIds.add(frameId);
         }
 
         function setup() {
             const H = window.innerHeight;
+            frameIds.forEach(id => cancelAnimationFrame(id));
+            frameIds.clear();
 
             // Чистим предыдущие, если пересоздаём при ресайзе
             overlay.querySelectorAll('.floating-text').forEach(n => n.remove());
 
             let langIndex = 0;
             thirds.forEach((t, tIdx) => {
+                const rowsPerThird = Math.floor(phrases.length / thirds.length)
+                    + (tIdx < phrases.length % thirds.length ? 1 : 0);
+                if (!rowsPerThird) return;
                 const yStart = H * t.start;
                 const yEnd   = H * t.end;
                 const rowH   = (yEnd - yStart) / rowsPerThird;
@@ -192,3 +206,4 @@
     </script>
 </body>
 </html>
+
