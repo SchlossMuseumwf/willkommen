@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#800000">
+    <title>Museum Wolfenbüttel · Polski</title>
+    <style>
+        :root { color-scheme: light; --ink:#2b211b; --wine:#800000; --key-height:68px; --gap:10px; }
+        * { box-sizing:border-box; }
+        [hidden] { display:none !important; }
+        body { margin:0; min-height:100vh; min-height:100svh; padding:8px; display:flex; align-items:center; justify-content:center; background:#f7f1e6; color:var(--ink); font-family:Arial,sans-serif; }
+        button, input { font:inherit; }
+        button, a, input[type="range"] { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+        button { cursor:pointer; }
+        .panel { width:min(100%,460px); padding:20px; display:grid; gap:var(--gap); border:2px solid #ddcdb5; border-radius:28px; background:#fffcf5; box-shadow:0 12px 38px #4c2c1214,inset 0 1px 0 #fff; }
+        .header { height:48px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .brand { min-width:0; }
+        h1 { margin:0 0 5px; font-size:19px; line-height:1.15; font-weight:700; }
+        .language { color:#7b6253; font-size:12px; }
+        .help { width:36px; height:36px; flex:0 0 36px; border:1px solid #d9c7b0; border-radius:50%; color:#75533e; background:#f7f0e5; font-size:19px; font-weight:bold; }
+        .number { height:58px; display:flex; align-items:center; justify-content:center; font-size:44px; font-weight:700; letter-spacing:2px; font-variant-numeric:tabular-nums; }
+        .title-slot { height:92px; display:flex; align-items:center; justify-content:center; padding:0 4px; text-align:center; }
+        .title { font-size:21px; line-height:1.28; font-weight:600; overflow:hidden; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; line-clamp:3; }
+        .title.empty { color:#9a897c; font-size:17px; font-weight:400; }
+        .keypad { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); grid-auto-rows:var(--key-height); gap:12px; padding-bottom:5px; }
+        .key { display:flex; align-items:center; justify-content:center; min-width:0; padding:0; border:1px solid #b96562; border-radius:20px; background:linear-gradient(165deg,#a3272d,#800000 65%); color:white; font-size:34px; font-weight:700; text-shadow:0 1px 1px #420000; box-shadow:0 5px 0 #590d12,0 8px 12px #5b151c24,inset 0 1px 0 #ffffff38; transition:transform 80ms,box-shadow 80ms,filter 120ms; user-select:none; -webkit-user-select:none; }
+        .key:active { transform:translateY(4px); box-shadow:0 1px 0 #590d12,0 3px 5px #5b151c24,inset 0 1px 0 #ffffff20; }
+        .key.clear { background:linear-gradient(165deg,#783034,#5e1111 65%); font-size:37px; }
+        .key.play { background:linear-gradient(165deg,#4e9857,#2e7d32 65%); border-color:#79ae7b; box-shadow:0 5px 0 #1c5422,0 8px 12px #224c2324,inset 0 1px 0 #ffffff38; }
+        .key.play:active { box-shadow:0 1px 0 #1c5422,0 3px 5px #224c2324,inset 0 1px 0 #ffffff20; }
+        .key svg { width:30px; height:30px; fill:currentColor; }
+        .key .triangle { transform:translateX(2px); }
+        button:focus-visible, a:focus-visible, input:focus-visible { outline:3px solid #bd8d3e; outline-offset:4px; }
+        @media (hover:hover) { .key:hover { filter:brightness(1.08); } }
+        .progress { height:48px; display:grid; grid-template-rows:24px 18px; gap:4px; }
+        #seek { display:block; width:100%; margin:0; padding:0; height:24px; accent-color:var(--wine); }
+        #seek:disabled { opacity:.3; }
+        .progress-info { display:flex; align-items:center; justify-content:space-between; gap:8px; color:#8d7b6d; font-size:12px; line-height:18px; }
+        #status { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        #time { flex-shrink:0; font-variant-numeric:tabular-nums; }
+        #back-link { height:48px; display:flex; align-items:center; justify-content:center; padding:6px 12px; text-align:center; border-radius:16px; border:1px solid #d1bba4; color:#6c332e; background:#f3eadf; text-decoration:none; font-size:14px; font-weight:600; }
+        dialog { width:min(440px,calc(100% - 32px)); max-height:calc(100svh - 32px); overflow:auto; padding:24px; border:1px solid #d1bba4; border-radius:24px; background:#fffcf5; color:var(--ink); box-shadow:0 20px 70px #0003; }
+        dialog::backdrop { background:#30201780; }
+        dialog h2 { margin:0 0 16px; font-size:22px; }
+        dialog p { margin:0 0 24px; font-size:16px; line-height:1.6; }
+        .close-help { min-height:44px; padding:10px 22px; border:0; border-radius:12px; background:var(--wine); color:#fff; font-weight:600; }
+        @media (max-height:760px) { :root { --key-height:56px; } .panel { padding:16px; } .header { height:44px; } .number { height:52px; } .title-slot { height:80px; } .progress { height:44px; } #back-link { height:44px; } }
+        @media (max-height:700px) { :root { --key-height:50px; --gap:8px; } .panel { padding:14px; border-radius:24px; } .header { height:38px; } h1 { font-size:18px; } .number { height:46px; font-size:40px; } .title-slot { height:70px; } .title { font-size:19px; } .keypad { gap:8px; } .key { border-radius:16px; font-size:30px; } }
+        @media (max-height:600px) { :root { --key-height:44px; --gap:6px; } .panel { padding:12px; } .header { height:34px; } .number { height:40px; } .title-slot { height:60px; } .title { font-size:17px; } .keypad { gap:6px; } .progress { height:40px; } #back-link { height:42px; } }
+        @media (prefers-reduced-motion:reduce) { .key { transition:none; } }
+    </style>
+</head>
+<body>
+    <main class="panel">
+        <header class="header">
+            <div class="brand"><h1>Museum Wolfenbüttel</h1><div class="language">Audioprzewodnik · Polski</div></div>
+            <button id="help-button" class="help" type="button" aria-label="Instrukcja">?</button>
+        </header>
+        <div id="display" class="number" aria-live="polite" aria-atomic="true"></div>
+        <div class="title-slot"><div id="audio-title" class="title empty" aria-live="polite">Wpisz numer</div></div>
+        <div class="keypad">
+            <button class="key digit" type="button" data-digit="1">1</button>
+            <button class="key digit" type="button" data-digit="2">2</button>
+            <button class="key digit" type="button" data-digit="3">3</button>
+            <button class="key digit" type="button" data-digit="4">4</button>
+            <button class="key digit" type="button" data-digit="5">5</button>
+            <button class="key digit" type="button" data-digit="6">6</button>
+            <button class="key digit" type="button" data-digit="7">7</button>
+            <button class="key digit" type="button" data-digit="8">8</button>
+            <button class="key digit" type="button" data-digit="9">9</button>
+            <button class="key digit" type="button" data-digit="0">0</button>
+            <button id="clear-button" class="key clear" type="button" aria-label="Zatrzymaj i usuń numer">←</button>
+            <button id="play-button" class="key play" type="button" aria-label="Odtwórz" aria-pressed="false">
+                <svg id="play-icon" class="triangle" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 3 L29 16 L8 29 Z"/></svg>
+                <svg id="pause-icon" viewBox="0 0 32 32" aria-hidden="true" hidden><path d="M7 4 H13 V28 H7 Z M19 4 H25 V28 H19 Z"/></svg>
+            </button>
+        </div>
+        <div class="progress">
+            <input id="seek" type="range" min="0" max="1000" step="1" value="0" disabled aria-label="Pozycja odtwarzania">
+            <div class="progress-info"><span id="status" aria-live="polite"></span><span id="time">0:00 / 0:00</span></div>
+        </div>
+        <a id="back-link" href="https://schlossmuseumwf.github.io/willkommen/">Powrót do wyboru języka</a>
+    </main>
+    <audio id="audio-player" preload="none" hidden></audio>
+    <dialog id="help-dialog" aria-labelledby="help-title">
+        <h2 id="help-title">Instrukcja</h2><p><p>W każdej sali znajdują się numery prowadzące do informacji o pomieszczeniach, eksponatach i ich historycznym kontekście. Wybierz odpowiedni numer, a następnie naciśnij przycisk odtwarzania.</p><p>Ten sam przycisk pozwala wstrzymać i wznowić odtwarzanie. Po zakończeniu nagrania numer zostanie usunięty. Głośność możesz regulować przyciskami telefonu.</p></p>
+        <button id="close-help" class="close-help" type="button">Zamknij</button>
+    </dialog>
+    <script>
+        'use strict';
+        const language = 'pl';
+        const labels = {"language": "Polski", "guide": "Audioprzewodnik", "prompt": "Wpisz numer", "play": "Odtwórz", "pause": "Pauza", "clear": "Zatrzymaj i usuń numer", "help": "Instrukcja", "close": "Zamknij", "loading": "Wczytywanie", "playing": "Odtwarzanie", "paused": "Wstrzymano", "error": "Niedostępne", "seek": "Pozycja odtwarzania"};
+        const audio = document.getElementById('audio-player');
+        const display = document.getElementById('display');
+        const title = document.getElementById('audio-title');
+        const playButton = document.getElementById('play-button');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const seek = document.getElementById('seek');
+        const status = document.getElementById('status');
+        const time = document.getElementById('time');
+        let titles = {};
+        let currentNumber = '';
+        let activeNumber = '';
+        let state = 'idle';
+        let playRequest = 0;
+
+        function formatTime(seconds) {
+            const value = Number.isFinite(seconds) ? Math.max(0,Math.floor(seconds)) : 0;
+            return `${Math.floor(value / 60)}:${String(value % 60).padStart(2,'0')}`;
+        }
+
+        function updateProgress() {
+            const duration = activeNumber && Number.isFinite(audio.duration) ? audio.duration : 0;
+            const position = duration > 0 ? audio.currentTime : 0;
+            seek.disabled = duration <= 0;
+            seek.value = duration > 0 ? String(Math.round(position / duration * 1000)) : '0';
+            seek.setAttribute('aria-valuetext',`${formatTime(position)} / ${formatTime(duration)}`);
+            time.textContent = `${formatTime(position)} / ${formatTime(duration)}`;
+        }
+
+        function render() {
+            display.textContent = currentNumber;
+            const selectedTitle = titles[language]?.[currentNumber];
+            title.textContent = currentNumber ? (selectedTitle || `${labels.guide} · ${currentNumber}`) : labels.prompt;
+            title.classList.toggle('empty',!currentNumber);
+            title.title = title.textContent;
+            const running = state === 'playing' || state === 'loading';
+            playIcon.hidden = running;
+            pauseIcon.hidden = !running;
+            playButton.setAttribute('aria-label',running ? labels.pause : labels.play);
+            playButton.setAttribute('aria-pressed',String(running));
+            status.textContent = state === 'idle' ? '' : (labels[state] || '');
+            updateProgress();
+        }
+
+        function resetPlayer(clearNumber = true) {
+            playRequest++;
+            activeNumber = '';
+            state = 'idle';
+            audio.pause();
+            audio.removeAttribute('src');
+            audio.load();
+            if (clearNumber) currentNumber = '';
+            render();
+        }
+
+        function addNumber(digit) {
+            if (activeNumber) resetPlayer();
+            if (currentNumber.length < 5) {
+                currentNumber = (currentNumber + digit).replace(/^0+(?=\d)/,'');
+                state = 'idle';
+                render();
+            }
+        }
+
+        function playAudio() {
+            if (!currentNumber || currentNumber === '0') return;
+            if (activeNumber === currentNumber && (state === 'playing' || state === 'loading')) {
+                playRequest++;
+                audio.pause();
+                state = 'paused';
+                render();
+                return;
+            }
+            const request = ++playRequest;
+            if (activeNumber !== currentNumber) {
+                activeNumber = currentNumber;
+                audio.src = `https://schlossmuseumwf.github.io/audio/mp3/${language}/${activeNumber}.mp3`;
+            }
+            state = 'loading';
+            render();
+            audio.play().catch(error => {
+                if (request !== playRequest || error.name === 'AbortError') return;
+                activeNumber = '';
+                state = 'error';
+                render();
+            });
+        }
+
+        audio.addEventListener('playing',() => {
+            if (activeNumber && !audio.paused) { state = 'playing'; render(); }
+        });
+        audio.addEventListener('pause',() => {
+            if (activeNumber && !audio.ended && state !== 'error') { state = 'paused'; render(); }
+        });
+        audio.addEventListener('ended',() => resetPlayer());
+        audio.addEventListener('error',() => {
+            if (!activeNumber) return;
+            playRequest++;
+            activeNumber = '';
+            state = 'error';
+            render();
+        });
+        ['timeupdate','loadedmetadata','durationchange'].forEach(event => audio.addEventListener(event,updateProgress));
+        seek.addEventListener('input',() => {
+            if (activeNumber && Number.isFinite(audio.duration) && audio.duration > 0) {
+                audio.currentTime = Number(seek.value) / 1000 * audio.duration;
+                updateProgress();
+            }
+        });
+        document.querySelectorAll('[data-digit]').forEach(button => button.addEventListener('click',() => addNumber(button.dataset.digit)));
+        playButton.addEventListener('click',playAudio);
+        document.getElementById('clear-button').addEventListener('click',() => resetPlayer());
+        document.getElementById('back-link').addEventListener('click',() => resetPlayer());
+        const helpDialog = document.getElementById('help-dialog');
+        document.getElementById('help-button').addEventListener('click',() => helpDialog.showModal());
+        document.getElementById('close-help').addEventListener('click',() => helpDialog.close());
+        window.addEventListener('pagehide',() => resetPlayer());
+
+        fetch('https://schlossmuseumwf.github.io/audio/titles.json',{ cache:'no-cache' })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
+            .then(data => { titles = data || {}; render(); })
+            .catch(() => { /* Number entry and audio remain available when titles cannot load. */ });
+        render();
+    </script>
+</body>
+</html>
