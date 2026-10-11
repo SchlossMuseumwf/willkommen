@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Wolfenbüttel – Svensk audioguide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .instruction {
+            margin-bottom: 30px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+        .display {
+            font-size: 24px;
+            border: 2px solid #007BFF;
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 20px auto;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .button {
+            font-size: 20px;
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .back-button {
+            background-color: #FF0000;
+        }
+        .back-button:hover {
+            background-color: #CC0000;
+        }
+        .play-button {
+            font-size: 20px;
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        .play-button:hover {
+            background-color: #218838;
+        }
+        .link-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .back-link {
+            font-size: 16px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ffc107;
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-link:hover {
+            background-color: #e0a800;
+        }
+        #audio-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p id="instruction" class="instruction">
+            Kära besökare, i varje rum finns nummer som leder till information om rummen, de utställda föremålen och deras historiska bakgrund.
+            Välj motsvarande nummer och tryck sedan på uppspelningsknappen.
+        </p>
+        <div id="display" class="display">0</div>
+        <div id="audio-title">Välj ett nummer</div>
+        <audio id="audio-player" controls style="width: 100%; max-width: 600px; display: none; margin: 20px auto;" controlslist="nodownload">
+            Din webbläsare stöder inte ljudspelaren.
+        </audio>
+        <div class="button-container">
+            <button class="button" onclick="addNumber(1)">1</button>
+            <button class="button" onclick="addNumber(2)">2</button>
+            <button class="button" onclick="addNumber(3)">3</button>
+            <button class="button" onclick="addNumber(4)">4</button>
+            <button class="button" onclick="addNumber(5)">5</button>
+            <button class="button" onclick="addNumber(6)">6</button>
+            <button class="button" onclick="addNumber(7)">7</button>
+            <button class="button" onclick="addNumber(8)">8</button>
+            <button class="button" onclick="addNumber(9)">9</button>
+            <button class="button" onclick="addNumber(0)">0</button>
+            <button class="button back-button" onclick="removeLast()">←</button>
+            <button id="play-button" class="play-button" onclick="playAudio()">▶</button>
+        </div>
+        <div class="link-container">
+            <a id="back-link" href="https://schlossmuseumwf.github.io/willkommen/" class="back-link">Tillbaka till språkvalet</a>
+        </div>
+    </div>
+
+    <script>
+        let currentNumber = '';
+        const titlesUrl = "https://schlossmuseumwf.github.io/audio/titles.json";
+        let titles = {};
+
+        fetch(titlesUrl, { cache: 'no-cache' })
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                titles = data;
+                console.log("Titlarna har lästs in:", titles);
+            })
+            .catch(error => {
+                console.error("Det gick inte att läsa in titlarna:", error);
+            });
+
+        function toggleHeader(show) {
+            const instruction = document.getElementById('instruction');
+            const audioTitle = document.getElementById('audio-title');
+            if (show) {
+                instruction.classList.remove('hidden');
+                audioTitle.classList.remove('hidden');
+            } else {
+                instruction.classList.add('hidden');
+                audioTitle.classList.add('hidden');
+            }
+        }
+
+        function addNumber(num) {
+            if (currentNumber.length < 5) {
+                currentNumber += num;
+                document.getElementById('display').textContent = currentNumber || '0';
+                toggleHeader(false);
+            }
+        }
+
+        function removeLast() {
+            currentNumber = currentNumber.slice(0, -1);
+            document.getElementById('display').textContent = currentNumber || '0';
+            if (!currentNumber) {
+                toggleHeader(true);
+            }
+        }
+
+        function playAudio() {
+            if (currentNumber) {
+                const language = 'sv';
+                const audioUrl = `https://schlossmuseumwf.github.io/audio/mp3/${language}/${currentNumber}.mp3`;
+                const audioPlayer = document.getElementById('audio-player');
+                const audioTitle = document.getElementById('audio-title');
+
+                const numericNumber = parseInt(currentNumber, 10);
+                const title = titles[language] && titles[language][numericNumber];
+
+                if (title) {
+                    audioTitle.textContent = title;
+                    audioTitle.classList.remove('hidden');
+                    audioTitle.style.display = 'block';
+                } else {
+                    audioTitle.textContent = `Ljudspår: ${currentNumber}`;
+                }
+
+                audioPlayer.src = audioUrl;
+                audioPlayer.style.display = 'block';
+                audioPlayer.play().catch(error => {
+                    console.error('Det gick inte att spela upp ljudet:', error);
+                    audioTitle.classList.remove('hidden');
+                    audioTitle.textContent = 'Ljudfilen kunde inte spelas upp. Försök igen.';
+                });
+            } else {
+                alert("Ange ett nummer innan du trycker på uppspelningsknappen.");
+            }
+        }
+    </script>
+</body>
+</html>
+
